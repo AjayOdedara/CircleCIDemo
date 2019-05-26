@@ -1,21 +1,16 @@
-    # iOS CircleCI 2.0 configuration file
-    #
-    # Check https://circleci.com/docs/2.0/ios-migrating-from-1-2/ for more details
-    #
-    
-    version: 2
+version: 2
     jobs:
         build:
 
-        # Specify the Xcode version to use
-        macos:
+# Specify the Xcode version to use
+macos:
         xcode: "10.1"
 
-        steps:
+steps:
             - checkout
 
-    # Install CocoaPods
-    - run:
+# Install CocoaPods
+- run:
         name: Install CocoaPods
         command: pod install
 
