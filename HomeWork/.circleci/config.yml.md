@@ -8,6 +8,7 @@ macos:
 
 steps:
             - checkout
+            - run: fastlane scan
 
 # Install CocoaPods
 - run:
