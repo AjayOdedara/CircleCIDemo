@@ -1,36 +1,35 @@
+# .circleci/config.yml
 version: 2
-    jobs:
-        build:
-
-# Specify the Xcode version to use
+jobs:
+build-and-test:
 macos:
-        xcode: "10.1"
-
+xcode: "10.1.0"
+environment:
+FL_OUTPUT_DIR: output
 steps:
-            - checkout
-            - run: fastlane scan
-
-# Install CocoaPods
+- checkout
 - run:
-        name: Install CocoaPods
-        command: pod install
+name: Fetch CocoaPods Specs
+command: |
+curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+- run:
+name: Install CocoaPods
+command: pod install --verbose
 
-    # Build the app and run tests
-    - run:
-        name: Build and run tests
-        command: fastlane scan
-        environment:
-            SCAN_DEVICE: iPhone 6
-            SCAN_SCHEME: WebTests
+- run:
+name: Build and run tests
+command: fastlane scan
+environment:
+SCAN_DEVICE: iPhone 8
+SCAN_SCHEME: WebTests
 
-    # Collect XML test results data to show in the UI,
-    # and save the same XML files under test-results folder
-    # in the Artifacts tab
-    - store_test_results:
-        path: test_output/report.xml
-    - store_artifacts:
-        path: /tmp/test-results
-        destination: scan-test-results
-    - store_artifacts:
-        path: ~/Library/Logs/scan
-        destination: scan-logs
+- store_test_results:
+path: output/scan
+- store_artifacts:
+path: output
+
+workflows:
+version: 2
+build-and-test:
+jobs:
+- build-and-test
